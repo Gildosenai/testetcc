@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Alertas Zabbix</title>
+</head>
+<body>
+	<h1>Alertas Zabbix</h1>
+	<div id="alertas"></div>
+
+	<script>
+		// Função para exibir as notificações de alerta
+		function exibirAlerta(alerta) {
+			const divAlertas = document.getElementById('alertas');
+			const paragrafo = document.createElement('p');
+			paragrafo.textContent = `${alerta.message} - Prioridade: ${alerta.priority} - Host: ${alerta.host} - IP: ${alerta.ip} - Tempo: ${alerta.time}`;
+			divAlertas.appendChild(paragrafo);
+		}
+
+		// Função para receber as notificações de alerta do servidor
+		function receberAlertas() {
+			fetch('notificacao.php')
+				.then(response => response.json())
+				.then(alertas => {
+					alertas.forEach(alerta => exibirAlerta(alerta));
+					setTimeout(receberAlertas, 5000); // Atualiza a cada 5 segundos
+				})
+				.catch(error => console.error(error));
+		}
+
+		// Inicia a recepção de notificações de alerta
+		receberAlertas();
+	</script>
+</body>
+</html>
